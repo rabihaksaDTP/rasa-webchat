@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import TextareaAutosize from 'react-textarea-autosize';
@@ -12,21 +12,12 @@ const Sender = ({ sendMessage, inputTextFieldHint, disabledInput, userInput, wit
   const [audioArrBuffer, setAudioArrBuffer] = useState([]);
   const [audio, setAudio] = useState(null);
   const mediaRecorder = useRef(null);
-  const mediaStream = useRef(null);
 
   const formRef = useRef(null);
 
   const microphoneSvg = <svg xmlns="http://www.w3.org/2000/svg" width="20%" height="40%" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2c-1.7 0-3 1.2-3 2.6v6.8c0 1.4 1.3 2.6 3 2.6s3-1.2 3-2.6V4.6C15 3.2 13.7 2 12 2z" /><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18.4v3.3M8 22h8" /></svg>;
   const stopSvg = <svg xmlns="http://www.w3.org/2000/svg" width="40%" height="40%" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><rect x="9" y="9" width="6" height="6" /></svg>;
 
-  useEffect(() => () => {
-    if (mediaRecorder.current) {
-      mediaRecorder.current.stop();
-    }
-    if (mediaStream.current) {
-      mediaStream.current.getTracks().forEach(track => track.stop());
-    }
-  }, []);
 
   const handleChange = (e) => {
     setInputValue(e.target.value);
