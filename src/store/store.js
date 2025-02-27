@@ -35,20 +35,27 @@ function initStore(
     }
     const emitMessage = (payload) => {
       const emit = () => {
-        socket.emit(
-          'user_uttered', {
-            message: payload,
-            customData: socket.customData,
-            session_id: sessionId
-          }
-        );
+        const isPayloadObject = typeof payload === 'object' && payload !== null && payload.message !== undefined;
+
+        const emitData = {
+          message: isPayloadObject ? payload.message : payload,
+          customData: {
+            ...socket.customData,
+            audio_message: payload.audio_message
+          },
+          session_id: sessionId
+        };
+
+        socket.emit('user_uttered', emitData);
+
         store.dispatch({
           type: actionTypes.ADD_NEW_USER_MESSAGE,
-          text: 'text',
+          text: isPayloadObject ? payload.message : payload,
           nextMessageIsTooltip: false,
           hidden: true
         });
       };
+
       if (socket.sessionConfirmed) {
         emit();
       } else {

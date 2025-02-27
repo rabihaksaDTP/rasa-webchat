@@ -42,6 +42,7 @@ const WidgetLayout = (props) => {
           customComponent={props.customComponent}
           showMessageDate={props.showMessageDate}
           inputTextFieldHint={props.inputTextFieldHint}
+          withAudio={props.withAudio}
         />
       )}
       {!props.embedded && (

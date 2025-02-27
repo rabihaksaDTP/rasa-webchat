@@ -570,14 +570,14 @@ class Widget extends Component {
     }
   }
 
-  handleMessageSubmit(event) {
+  handleMessageSubmit(event, object) {
     event.preventDefault();
-    const userUttered = event.target.message.value;
+    const userUttered = object?.message ? object : event.target.message.value;
     if (userUttered) {
       this.props.dispatch(addUserMessage(userUttered));
       this.props.dispatch(emitUserMessage(userUttered));
     }
-    event.target.message.value = '';
+    if (event.target.message) { event.target.message.value = ''; }
   }
 
   render() {
@@ -585,7 +585,7 @@ class Widget extends Component {
       <WidgetLayout
         toggleChat={() => this.toggleConversation()}
         toggleFullScreen={() => this.toggleFullScreen()}
-        onSendMessage={event => this.handleMessageSubmit(event)}
+        onSendMessage={(event, audio) => this.handleMessageSubmit(event, audio)}
         title={this.props.title}
         subtitle={this.props.subtitle}
         customData={this.props.customData}
@@ -607,6 +607,7 @@ class Widget extends Component {
         displayUnreadCount={this.props.displayUnreadCount}
         showMessageDate={this.props.showMessageDate}
         tooltipPayload={this.props.tooltipPayload}
+        withAudio={this.props.withAudio}
       />
     );
   }

@@ -14,7 +14,7 @@ class Message extends PureComponent {
     const sender = this.props.message.get('sender');
     const text = this.props.message.get('text');
     const arabic = /[\u0600-\u06FF]/;
-    const rtl = text && arabic.test(text) 
+    const rtl = text && arabic.test(text);
     const customCss = this.props.message.get('customCss') && this.props.message.get('customCss').toJS();
 
     if (customCss && customCss.style === 'class') {
@@ -33,43 +33,60 @@ class Message extends PureComponent {
       style = { color: userTextColor, backgroundColor: userBackgroundColor };
     }
 
+    // Determine if the text is a string or an object
+    const isTextString = typeof text === 'string';
+    const isAudioObject = !isTextString && text && text.message;
+
     return (
       <div
         className={sender === 'response' && customCss && customCss.style === 'class' ?
           `rw-response ${customCss.css}` :
           `rw-${sender}`}
-        style={{...style,direction:`${rtl?"rtl":"ltr"}`}}
+        style={{ ...style, direction: `${rtl ? 'rtl' : 'ltr'}` }}
       >
-        <div
-          className="rw-message-text"
-        >
+        <div className="rw-message-text">
           {sender === 'response' ? (
-            <ReactMarkdown
-              className={'rw-markdown'}
-              source={text}
-              linkTarget={(url) => {
-                if (!url.startsWith('mailto') && !url.startsWith('javascript')) return '_blank';
-                return undefined;
-              }}
-              transformLinkUri={null}
-              renderers={{
-                link: props =>
-                  docViewer ? (
-                    <DocViewer src={props.href}>{props.children}</DocViewer>
-                  ) : (
-                    <a href={props.href} target={linkTarget || '_blank'} rel="noopener noreferrer" onMouseUp={e => e.stopPropagation()}>{props.children}</a>
-                  )
-              }}
-            />
+            isTextString ? (
+              <ReactMarkdown
+                className={'rw-markdown'}
+                source={text}
+                linkTarget={(url) => {
+                  if (!url.startsWith('mailto') && !url.startsWith('javascript')) return '_blank';
+                  return undefined;
+                }}
+                transformLinkUri={null}
+                renderers={{
+                  link: props =>
+                    docViewer ? (
+                      <DocViewer src={props.href}>{props.children}</DocViewer>
+                    ) : (
+                      <a href={props.href} target={linkTarget || '_blank'} rel="noopener noreferrer" onMouseUp={e => e.stopPropagation()}>{props.children}</a>
+                    )
+                }}
+              />
+            ) : isAudioObject ? (
+              <audio
+                style={{ width: '250px', height: '50px' }}
+                src={`data:audio/mp3;base64,${text.message}`}
+                controls
+              />
+            ) : null
           ) : (
-            text
+            isTextString ? (
+              <div>{text}</div>
+            ) : isAudioObject ? (
+              <audio
+                style={{ width: '250px', height: '50px' }}
+                src={`data:audio/mp3;base64,${text.message}`}
+                controls
+              />
+            ) : null
           )}
         </div>
       </div>
     );
   }
 }
-
 
 Message.contextType = ThemeContext;
 Message.propTypes = {

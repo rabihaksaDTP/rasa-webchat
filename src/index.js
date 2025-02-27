@@ -138,6 +138,7 @@ const ConnectedWidget = forwardRef((props, ref) => {
           showCloseButton={props.showCloseButton}
           showFullScreenButton={props.showFullScreenButton}
           hideWhenNotConnected={props.hideWhenNotConnected}
+          withAudio={props.withAudio}
           customSessionId={props.customSessionId}
           connectOn={props.connectOn}
           autoClearCache={props.autoClearCache}

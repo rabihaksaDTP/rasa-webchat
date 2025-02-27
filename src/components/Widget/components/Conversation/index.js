@@ -28,6 +28,7 @@ const Conversation = props =>
       showMessageDate={props.showMessageDate}
     />
     <Sender
+      withAudio={props.withAudio}
       sendMessage={props.sendMessage}
       disabledInput={props.disabledInput}
       inputTextFieldHint={props.inputTextFieldHint}
