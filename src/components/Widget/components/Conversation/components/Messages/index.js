@@ -9,6 +9,32 @@ import { Video, Image, Message, Carousel, Buttons } from 'messagesComponents';
 import './styles.scss';
 import ThemeContext from '../../../../ThemeContext';
 
+
+const sendFeedback = async (message, feedbackStatus, question) => {
+  const feedbackData = {
+    response: message.get('text'),
+    question,
+    feedbackStatus,
+    sender_id: message.get('sender')
+  };
+
+  try {
+    const response = await fetch('/api/feedback', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(feedbackData)
+    });
+
+    if (!response.ok) {
+      console.error('Failed to send feedback');
+    }
+  } catch (error) {
+    console.error('Error sending feedback:', error);
+  }
+};
+
 const isToday = (date) => {
   const today = new Date();
   return date.getDate() === today.getDate() &&
@@ -104,17 +130,36 @@ class Messages extends Component {
           : null;
       };
 
-      const renderMessage = (message, index) => (
-        <div className={`rw-message ${profileAvatar && 'rw-with-avatar'}`} key={index}>
-          {
-            profileAvatar &&
-            message.get('showAvatar') &&
-            <img src={profileAvatar} className="rw-avatar" alt="profile" />
-          }
-          {this.getComponentToRender(message, index, index === messages.size - 1)}
-          {renderMessageDate(message)}
-        </div>
-      );
+      let lastClientMessage = null;
+      const messagePairs = new Map(); // Store client-response pairs
+
+      const renderMessage = (message, index) => {
+        const sender = message.get('sender');
+        const text = message.get('text') || 'Non-text message';
+
+        if (sender === 'client') {
+          lastClientMessage = text; // Update last client message
+        } else if (sender === 'response' && lastClientMessage) {
+          messagePairs.set(index, lastClientMessage); // Pair response with the correct client message
+        }
+
+        return (
+          <div className={'rw-message'} key={index}>
+            {this.getComponentToRender(message, index)}
+
+            {sender === 'response' && (
+              <div className="feedback-buttons">
+                <button onClick={() => sendFeedback(message, 'good', messagePairs.get(index))} className="good-feedback">
+                  👍
+                </button>
+                <button onClick={() => sendFeedback(message, 'bad', messagePairs.get(index))} className="bad-feedback">
+                  👎
+                </button>
+              </div>
+            )}
+          </div>
+        );
+      };
 
       messages.forEach((msg, index) => {
         if (msg.get('hidden')) return;
