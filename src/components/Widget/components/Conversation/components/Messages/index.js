@@ -234,7 +234,7 @@ class Messages extends Component {
                         autoFocus
                         autoComplete="off"
                       />
-                      <button type="submit" className="rw-send-feedback">
+                      <button type="submit" className="rw-send rw-send-feedback">
                         <Send className="rw-send-icon" alt="send" />
                       </button>
 
