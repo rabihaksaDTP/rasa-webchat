@@ -26,6 +26,8 @@ const Conversation = props =>
       params={props.params}
       customComponent={props.customComponent}
       showMessageDate={props.showMessageDate}
+      withFeedback={props.withFeedback}
+      customData={props.customData}
     />
     <Sender
       withAudio={props.withAudio}

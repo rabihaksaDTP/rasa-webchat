@@ -1,23 +1,27 @@
-import React, { Component } from 'react';
+import React, { Component,createRef } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
-
+import TextareaAutosize from 'react-textarea-autosize';
 import { MESSAGES_TYPES } from 'constants';
 import { Video, Image, Message, Carousel, Buttons } from 'messagesComponents';
-
 import './styles.scss';
 import ThemeContext from '../../../../ThemeContext';
+import Send from '../../../../../../../assets/send_button';
 
 
-const sendFeedback = async (message, feedbackStatus, question) => {
+const sendFeedback = async ({message, feedbackStatus, question,customData,toggleTextBox,formData,setfeedbackbtns}) => {
+
+  let formDataObj = new FormData(formData.target);
   const feedbackData = {
-    response: message.get('text'),
+    answer: message.get('text'),
     question,
     feedbackStatus,
-    sender_id: message.get('sender')
+    senderId: message.get('sender'),
+    homeAirport:customData?.airport_id,
+    client:customData?.client_id,
+    feedback:formDataObj.get("feedback")
   };
-
   try {
     const response = await fetch('/api/feedback', {
       method: 'POST',
@@ -26,11 +30,16 @@ const sendFeedback = async (message, feedbackStatus, question) => {
       },
       body: JSON.stringify(feedbackData)
     });
+    if (response.ok) {
+      toggleTextBox(false)
+      setfeedbackbtns(false)
+    }
 
     if (!response.ok) {
       console.error('Failed to send feedback');
     }
   } catch (error) {
+    toggleTextBox(false)
     console.error('Error sending feedback:', error);
   }
 };
@@ -56,6 +65,36 @@ const scrollToBottom = () => {
 };
 
 class Messages extends Component {
+  constructor(props) {
+    super(props);
+    this.formRef = createRef();
+    this.state = {
+      textBoxOpen: false,
+      feedbackbtns:true,
+      textBoxVal:""
+    };
+  }
+  toggleTextBox = (bool) => {
+    this.setState((prevState) => ({
+      textBoxOpen:bool,
+    }));
+  };
+  setfeedbackbtns = (feedbackbtns) => {
+    this.setState(() => ({
+      feedbackbtns:feedbackbtns
+    }));
+  };
+  setTextBoxVal = (textBoxVal) => {
+    this.setState(() => ({
+      textBoxVal:textBoxVal
+    }));
+  };
+  onEnterPress = (e) => {
+    if (e.keyCode === 13 && !e.shiftKey) {
+      e.preventDefault();
+      this.formRef.current.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    }
+  };
   componentDidMount() {
     scrollToBottom();
   }
@@ -104,7 +143,8 @@ class Messages extends Component {
   }
 
   render() {
-    const { displayTypingIndication, profileAvatar } = this.props;
+    const { displayTypingIndication, profileAvatar,customData} = this.props;
+    const { textBoxOpen,feedbackbtns } = this.state; // Get state
 
     const renderMessages = () => {
       const {
@@ -144,17 +184,40 @@ class Messages extends Component {
         }
 
         return (
-          <div className={'rw-message'} key={index}>
+          <div className={'rw-message'} key={index} style={{flexDirection:this.props.withFeedback? "column":""}}>
             {this.getComponentToRender(message, index)}
-
-            {sender === 'response' && (
-              <div className="feedback-buttons">
-                <button onClick={() => sendFeedback(message, 'good', messagePairs.get(index))} className="good-feedback">
+            {sender === 'response' && this.props.withFeedback && feedbackbtns &&  (
+              <div className="feedback-buttons" style={{position:"relative",zIndex:"9999"}}>
+                <button onClick={() => {this.toggleTextBox("GoodResponse");}}  className="good-feedback">
                   👍
                 </button>
-                <button onClick={() => sendFeedback(message, 'bad', messagePairs.get(index))} className="bad-feedback">
+                <button onClick={() => {this.toggleTextBox("BadResponse");} 
+                } className="bad-feedback">
                   👎
                 </button>
+                {textBoxOpen &&
+                <div style={{position:"absolute",minWidth:"250px"}} className='rw-feedback-container'>
+                  <form ref={this.formRef} className="rw-sender rw-feedback-form" onSubmit={(e)=>{ e.preventDefault();sendFeedback({setfeedbackbtns:this.setfeedbackbtns, toggleTextBox:this.toggleTextBox,message: message, feedbackStatus:textBoxOpen, question: messagePairs.get(index), customData: customData, formData:e,textBoxValue:textBoxOpen })}}>
+                    <div style={{ display: "flex" }}>
+                      <textarea
+                        type="text"
+                        onKeyDown={this.onEnterPress}
+                        className="rw-new-message rw-feedback-msg"
+                        name="feedback"
+                        placeholder={"Feedback"}
+                        disabled={false}
+                        onChange={(e)=>{this.setTextBoxVal(e.target.value)}}
+                        autoFocus
+                        autoComplete="off"
+                      />
+                      <button type="submit" className="rw-send rw-send-feedback" disabled={!this.state.textBoxVal}>
+                        <Send className="rw-send-icon" ready={!this.state.textBoxVal} alt="send" />
+                      </button>
+                    </div>
+                  </form>
+                </div>
+
+                }
               </div>
             )}
           </div>
