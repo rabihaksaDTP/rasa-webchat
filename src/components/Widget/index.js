@@ -609,6 +609,7 @@ class Widget extends Component {
         tooltipPayload={this.props.tooltipPayload}
         withAudio={this.props.withAudio}
         withFeedback={this.props.withFeedback}
+        feedbackUrl={this.props.feedbackUrl}
       />
     );
   }

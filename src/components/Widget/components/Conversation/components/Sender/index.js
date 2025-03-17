@@ -5,7 +5,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import Send from 'assets/send_button';
 import './style.scss';
 
-const Sender = ({ sendMessage, inputTextFieldHint, disabledInput, userInput, withAudio,withFeedback }) => {
+const Sender = ({ sendMessage, inputTextFieldHint, disabledInput, userInput, withAudio }) => {
   const [inputValue, setInputValue] = useState('');
   const [recordingStatus, setRecordingStatus] = useState('inactive');
   const [audioChunks, setAudioChunks] = useState([]);

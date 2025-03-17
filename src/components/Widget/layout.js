@@ -44,6 +44,7 @@ const WidgetLayout = (props) => {
           inputTextFieldHint={props.inputTextFieldHint}
           withAudio={props.withAudio}
           withFeedback={props.withFeedback}
+          feedbackUrl={props.feedbackUrl}
           customData={props.customData}
         />
       )}
