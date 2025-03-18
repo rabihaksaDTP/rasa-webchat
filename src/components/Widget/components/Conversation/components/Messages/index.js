@@ -33,15 +33,14 @@ const sendFeedback = async ({message, feedbackStatus, question,customData,toggle
     if (response.ok) {
       markMessageAsReported(index)
       message._root.entries.push(["isReported", true]);
-      toggleTextBox(false)
+      toggleTextBox(false,index)
     }
 
     if (!response.ok) {
       console.error('Failed to send feedback');
     }
   } catch (error) {
-    toggleTextBox(false)
-    console.error('Error sending feedback:', error);
+    toggleTextBox(false,index)
   }
 };
 
@@ -70,13 +69,13 @@ class Messages extends Component {
     super(props);
     this.formRef = createRef();
     this.state = {
-      textBoxOpen: false,
+      textBoxOpen: {},
       textBoxVal:"",
       reportedMessages: new Set(),
     };
   }
-  toggleTextBox = (bool) => {
-    this.setState({ textBoxOpen: bool });
+  toggleTextBox = (bool,index) => {
+    this.setState((prev)=> { return({ textBoxOpen:{...prev?.textBoxOpen, [index]: bool } } ) });
   };
   
   setTextBoxVal = (textBoxVal) => {
@@ -169,13 +168,20 @@ class Messages extends Component {
 
       let lastClientMessage = null;
       const messagePairs = new Map(); 
-
-      let lastResponseIndex = -1;
-      messages.forEach((msg, index) => {
-        if (msg.get('sender') === 'response') {
-          lastResponseIndex = index;
-        }
-      });
+      let lastResponseIndex = [];
+      let messagesJs = messages.toJS();
+      const clientMessages = messagesJs.filter(msg => msg['sender'] === "client");
+      // messages.toJS().findLast((e)=> e.text=== clientMessages.toJS()[clientMessages.toJS().length - 1].text )
+      if (clientMessages) {
+        let lastMessages =messagesJs.slice( messagesJs.findLastIndex((e)=> e?.text===clientMessages[clientMessages.length - 1]?.text) );
+        lastResponseIndex = lastMessages
+      } else {
+        messages?.forEach((msg, index) => {
+          if (msg.get('sender') === 'response') {
+            lastResponseIndex=[msg.toJS()]
+          }
+        });
+      }
 
       const renderMessage = (message, index) => {
         const sender = message.get('sender');
@@ -188,25 +194,25 @@ class Messages extends Component {
           lastClientMessage = text; 
         } else if (sender === 'response' && lastClientMessage) {
           messagePairs.set(index, lastClientMessage);
-        }
-
-    
+        }    
         return (
           <div className={'rw-message'} key={index} style={{flexDirection:this.props.withFeedback? "column":""}}>
             {this.getComponentToRender(message, index)}
-            {sender === 'response' && this.props.withFeedback && index === lastResponseIndex && !isReported && !isStateReported && (
+            {sender === 'response' && 
+            this.props.withFeedback && lastResponseIndex.some((e)=>(e?.text===message.toJS()?.text && e?.timestamp===message.toJS()?.timestamp) ) 
+            && !isReported && !isStateReported && (
               <div className="feedback-buttons" style={{position:"relative",zIndex:"9999"}}>
-                {!textBoxOpen &&
+                {!textBoxOpen[index] &&
                   <div>
-                    <button onClick={() => { this.toggleTextBox("GoodResponse"); }} className="good-feedback">
+                    <button onClick={() => { this.toggleTextBox("GoodResponse",index); }} className="good-feedback">
                       👍
                     </button>
-                    <button onClick={() => { this.toggleTextBox("BadResponse"); }
+                    <button onClick={() => { this.toggleTextBox("BadResponse",index); }
                     } className="bad-feedback">
                       👎
                     </button>
                   </div>}
-                {textBoxOpen &&
+                {textBoxOpen[index] &&
                 <div style={{position:"absolute",minWidth:"250px"}} className='rw-feedback-container'>
                   <form ref={this.formRef} className="rw-sender rw-feedback-form" onSubmit={(e)=>{ 
                     e.preventDefault();
@@ -238,12 +244,11 @@ class Messages extends Component {
                         <Send className="rw-send-icon" alt="send" />
                       </button>
 
-                      <button type="button" className="rw-cancel-feedback" onClick={() => this.toggleTextBox(false)}>✖</button>
+                      <button type="button" className="rw-cancel-feedback" onClick={() => this.toggleTextBox(false,index)}>✖</button>
 
                     </div>
                   </form>
                 </div>
-
                 }
               </div>
             )}
