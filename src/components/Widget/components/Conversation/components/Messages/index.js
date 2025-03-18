@@ -10,9 +10,10 @@ import ThemeContext from '../../../../ThemeContext';
 import Send from '../../../../../../../assets/send_button';
 
 
-const sendFeedback = async ({message, feedbackStatus, question,customData,toggleTextBox,formData, feedbackUrl, requestHeaders, markMessageAsReported, index}) => {
+const sendFeedback = async ({message, feedbackStatus, question,customData,toggleTextBox,formData, feedbackUrl, requestHeaders, markMessageAsReported, index,toggleFeedbackLoader}) => {
 
   let formDataObj = new FormData(formData.target);
+  const timeOutTime = 2000
   const feedbackData = {
     answer: message.get('text'),
     question,
@@ -23,6 +24,7 @@ const sendFeedback = async ({message, feedbackStatus, question,customData,toggle
     feedback:formDataObj.get("feedback")
   };
   try {
+    toggleFeedbackLoader(true,false,null,index)
     const response = await fetch(feedbackUrl, {
       method: 'POST',
       headers: requestHeaders,
@@ -31,14 +33,27 @@ const sendFeedback = async ({message, feedbackStatus, question,customData,toggle
     if (response.ok) {
       markMessageAsReported(index)
       message._root.entries.push(["isReported", true]);
-      toggleTextBox(false,index)
+      toggleFeedbackLoader(false,true,null,index)
+      setTimeout(() => {
+        toggleFeedbackLoader(false,false,null,index)
+        toggleTextBox(false,index)
+      }, timeOutTime);
     }
-
+    
     if (!response.ok) {
       console.error('Failed to send feedback');
+      toggleFeedbackLoader(false,false,'Failed to send feedback',index)
+      setTimeout(() => {
+        toggleFeedbackLoader(false,false,null,index)
+        toggleTextBox(false,index)
+      }, timeOutTime);
     }
   } catch (error) {
-    toggleTextBox(false,index)
+    toggleFeedbackLoader(false,false,'Failed to send feedback',index)
+    setTimeout(() => {
+      toggleFeedbackLoader(false,false,null,index)
+      toggleTextBox(false,index)
+    }, timeOutTime);
   }
 };
 
@@ -70,12 +85,16 @@ class Messages extends Component {
       textBoxOpen: {},
       textBoxVal:"",
       reportedMessages: new Set(),
+      feedbackLoader:{},
+      feedbackSuccess:{}
     };
   }
   toggleTextBox = (bool,index) => {
     this.setState((prev)=> { return({ textBoxOpen:{...prev?.textBoxOpen, [index]: bool } } ) });
   };
-  
+  toggleFeedbackLoader = (loadingStatus,successStatus,errorMessage,index) => {
+    this.setState((prev)=> { return({ feedbackLoader:{...prev?.feedbackLoader, [index]: {loading:loadingStatus,successStatus:successStatus,errorMessage:errorMessage} } } ) });
+  };
   setTextBoxVal = (textBoxVal) => {
     this.setState({ textBoxVal: textBoxVal });
   };
@@ -138,8 +157,7 @@ class Messages extends Component {
   };
   render() {
     const { displayTypingIndication, profileAvatar,customData} = this.props;
-    const { textBoxOpen } = this.state; 
-
+    const { textBoxOpen,feedbackLoader } = this.state;     
     const renderMessages = () => {
       const {
         messages,
@@ -197,60 +215,100 @@ class Messages extends Component {
           <div className={'rw-message'} key={index} style={{flexDirection:this.props.withFeedback? "column":""}}>
             {this.getComponentToRender(message, index)}
             {sender === 'response' && 
-            this.props.withFeedback && lastResponseIndex.some((e)=>(e?.text===message.toJS()?.text && e?.timestamp===message.toJS()?.timestamp) ) 
-            && !isReported && !isStateReported && message.get('text') &&  (
-              <div className="feedback-buttons" style={{position:"relative",zIndex:"9999"}}>
-                {!textBoxOpen[index] &&
-                  <div>
-                    <button onClick={() => { this.toggleTextBox("GoodResponse",index); }} className="good-feedback">
-                      👍
-                    </button>
-                    <button onClick={() => { this.toggleTextBox("BadResponse",index); }
-                    } className="bad-feedback">
-                      👎
-                    </button>
-                  </div>}
-                {textBoxOpen[index] &&
-                <div style={{position:"absolute",minWidth:"250px"}} className='rw-feedback-container'>
-                  <form ref={this.formRef} className="rw-sender rw-feedback-form" onSubmit={(e)=>{ 
-                    e.preventDefault();
-                      sendFeedback(
-                        {
-                          setfeedbackbtns: this.setfeedbackbtns, toggleTextBox: this.toggleTextBox, message: message,
-                          feedbackStatus: textBoxOpen[index] , question: messagePairs.get(index),
-                          customData: customData,
-                          formData: e, textBoxValue: textBoxOpen,
-                          feedbackUrl: this.props.feedbackUrl,
-                          requestHeaders: this.props.requestHeaders,
-                          markMessageAsReported:this.markMessageAsReported,
-                          index,
-                        })
-                    }}>
-
-                    <div style={{ display: "flex" }}>
-                      <textarea
-                        type="text"
-                        onKeyDown={this.onEnterPress}
-                        className="rw-new-message rw-feedback-msg"
-                        name="feedback"
-                        placeholder={"Feedback"}
-                        disabled={false}
-                        onChange={(e) => { this.setTextBoxVal(e.target.value) }}
-                        autoFocus
-                        autoComplete="off"
-                      />
-                      <button type="submit" className="rw-send rw-send-feedback">
-                        <Send className="rw-send-icon" alt="send" />
+              this.props.withFeedback && lastResponseIndex.some((e) => (e?.text === message.toJS()?.text && e?.timestamp === message.toJS()?.timestamp))
+              && !isReported && !isStateReported && message.get('text') && (
+                <div className="feedback-buttons" style={{ position: "relative", zIndex: "9999" }}>
+                  {!textBoxOpen[index] &&
+                    <div>
+                      <button onClick={() => { this.toggleTextBox("GoodResponse", index); }} className="good-feedback">
+                        👍
                       </button>
+                      <button onClick={() => { this.toggleTextBox("BadResponse", index); }
+                      } className="bad-feedback">
+                        👎
+                      </button>
+                    </div>}
+                  {textBoxOpen[index] &&
+                    <div style={{ position: "absolute", minWidth: "250px" }} className='rw-feedback-container'>
+                      <form ref={this.formRef} className="rw-sender rw-feedback-form" onSubmit={(e) => {
+                        e.preventDefault();
+                        sendFeedback(
+                          {
+                            setfeedbackbtns: this.setfeedbackbtns, toggleTextBox: this.toggleTextBox, message: message,
+                            feedbackStatus: textBoxOpen[index], question: messagePairs.get(index),
+                            customData: customData,
+                            formData: e, textBoxValue: textBoxOpen,
+                            feedbackUrl: this.props.feedbackUrl,
+                            requestHeaders: this.props.requestHeaders,
+                            markMessageAsReported: this.markMessageAsReported,
+                            index,
+                            toggleFeedbackLoader: this.toggleFeedbackLoader,
+                          });
+                      }}>
 
-                      <button type="button" className="rw-cancel-feedback" onClick={() => this.toggleTextBox(false,index)}>✖</button>
+                        <div style={{ display: "flex" }}>
+                          <textarea
+                            type="text"
+                            onKeyDown={this.onEnterPress}
+                            className="rw-new-message rw-feedback-msg"
+                            name="feedback"
+                            placeholder={"Feedback"}
+                            disabled={false}
+                            onChange={(e) => { this.setTextBoxVal(e.target.value); }}
+                            autoFocus
+                            autoComplete="off"
+                          />
+                          <button type="submit" className="rw-send rw-send-feedback">
+                            <Send className="rw-send-icon" alt="send" />
+                          </button>
 
+                          <button type="button" className="rw-cancel-feedback" onClick={() => this.toggleTextBox(false, index)}>✖</button>
+
+                        </div>
+                        {feedbackLoader[index]?.loading && <div style={{
+                          position: "absolute",
+                          background: "#4CA54C",
+                          width: "100%",
+                          height: "68%",
+                          borderRadius: "7px",
+                          textAlign: "center",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: "white",
+                        }}
+                        > Sending Feedback... </div>}
+                        {feedbackLoader[index]?.successStatus && <div style={{
+                          position: "absolute",
+                          background: "#4CA54C",
+                          width: "100%",
+                          height: "68%",
+                          borderRadius: "7px",
+                          textAlign: "center",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: "white",
+                        }}
+                        > Feedback sent succesfully </div>}
+                        {!feedbackLoader[index]?.successStatus && feedbackLoader[index]?.errorMessage && <div style={{
+                          position: "absolute",
+                          background: "#D63838",
+                          width: "100%",
+                          height: "68%",
+                          borderRadius: "7px",
+                          textAlign: "center",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: "white",
+                        }}
+                        > {`Error: ${feedbackLoader[index]?.errorMessage}`} </div>}
+                      </form>
                     </div>
-                  </form>
+                  }
                 </div>
-                }
-              </div>
-            )}
+              )}
           </div>
         );
       };
