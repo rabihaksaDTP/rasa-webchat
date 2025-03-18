@@ -10,7 +10,7 @@ import ThemeContext from '../../../../ThemeContext';
 import Send from '../../../../../../../assets/send_button';
 
 
-const sendFeedback = async ({message, feedbackStatus, question,customData,toggleTextBox,formData, feedbackUrl, markMessageAsReported, index}) => {
+const sendFeedback = async ({message, feedbackStatus, question,customData,toggleTextBox,formData, feedbackUrl, requestHeaders, markMessageAsReported, index}) => {
 
   let formDataObj = new FormData(formData.target);
   const feedbackData = {
@@ -25,9 +25,7 @@ const sendFeedback = async ({message, feedbackStatus, question,customData,toggle
   try {
     const response = await fetch(feedbackUrl, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: requestHeaders,
       body: JSON.stringify(feedbackData)
     });
     if (response.ok) {
@@ -223,6 +221,7 @@ class Messages extends Component {
                           customData: customData,
                           formData: e, textBoxValue: textBoxOpen,
                           feedbackUrl: this.props.feedbackUrl,
+                          requestHeaders: this.props.requestHeaders,
                           markMessageAsReported:this.markMessageAsReported,
                           index,
                         })

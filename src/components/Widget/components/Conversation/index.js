@@ -28,6 +28,7 @@ const Conversation = props =>
       showMessageDate={props.showMessageDate}
       withFeedback={props.withFeedback}
       feedbackUrl={props.feedbackUrl}
+      requestHeaders={props.requestHeaders}
       customData={props.customData}
     />
     <Sender

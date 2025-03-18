@@ -45,6 +45,7 @@ const WidgetLayout = (props) => {
           withAudio={props.withAudio}
           withFeedback={props.withFeedback}
           feedbackUrl={props.feedbackUrl}
+          requestHeaders={props.requestHeaders}
           customData={props.customData}
         />
       )}

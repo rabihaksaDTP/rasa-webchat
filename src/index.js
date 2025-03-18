@@ -141,6 +141,7 @@ const ConnectedWidget = forwardRef((props, ref) => {
           withAudio={props.withAudio}
           withFeedback={props.withFeedback}
           feedbackUrl={props.feedbackUrl}
+          requestHeaders={props.requestHeaders}
           customSessionId={props.customSessionId}
           connectOn={props.connectOn}
           autoClearCache={props.autoClearCache}

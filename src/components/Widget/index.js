@@ -610,6 +610,7 @@ class Widget extends Component {
         withAudio={this.props.withAudio}
         withFeedback={this.props.withFeedback}
         feedbackUrl={this.props.feedbackUrl}
+        requestHeaders={this.props.requestHeaders}
       />
     );
   }
