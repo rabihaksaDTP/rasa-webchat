@@ -47,6 +47,7 @@ const WidgetLayout = (props) => {
           feedbackUrl={props.feedbackUrl}
           requestHeaders={props.requestHeaders}
           customData={props.customData}
+          customSessionId={props.customSessionId}
         />
       )}
       {!props.embedded && (

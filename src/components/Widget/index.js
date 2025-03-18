@@ -589,6 +589,8 @@ class Widget extends Component {
         title={this.props.title}
         subtitle={this.props.subtitle}
         customData={this.props.customData}
+        customSessionId={this.props.customSessionId}
+
         profileAvatar={this.props.profileAvatar}
         showCloseButton={this.props.showCloseButton}
         showFullScreenButton={this.props.showFullScreenButton}

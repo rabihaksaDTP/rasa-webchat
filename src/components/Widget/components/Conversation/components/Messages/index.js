@@ -10,7 +10,7 @@ import ThemeContext from '../../../../ThemeContext';
 import Send from '../../../../../../../assets/send_button';
 
 
-const sendFeedback = async ({message, feedbackStatus, question,customData,toggleTextBox,formData, feedbackUrl, requestHeaders, markMessageAsReported, index,toggleFeedbackLoader}) => {
+const sendFeedback = async ({customSessionId,message, feedbackStatus, question,customData,toggleTextBox,formData, feedbackUrl, requestHeaders, markMessageAsReported, index,toggleFeedbackLoader}) => {
 
   let formDataObj = new FormData(formData.target);
   const timeOutTime = 2000
@@ -18,7 +18,7 @@ const sendFeedback = async ({message, feedbackStatus, question,customData,toggle
     answer: message.get('text'),
     question,
     feedbackStatus,
-    senderId: customData?.user_id,
+    senderId: customSessionId,
     homeAirport:customData?.airport_id,
     client:customData?.client_id,
     feedback:formDataObj.get("feedback")
@@ -240,6 +240,7 @@ class Messages extends Component {
                             markMessageAsReported: this.markMessageAsReported,
                             index,
                             toggleFeedbackLoader: this.toggleFeedbackLoader,
+                            customSessionId:this.props?.customSessionId
                           });
                       }}>
 

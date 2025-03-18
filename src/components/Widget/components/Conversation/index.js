@@ -30,6 +30,7 @@ const Conversation = props =>
       feedbackUrl={props.feedbackUrl}
       requestHeaders={props.requestHeaders}
       customData={props.customData}
+      customSessionId={props.customSessionId}
     />
     <Sender
       withAudio={props.withAudio}
