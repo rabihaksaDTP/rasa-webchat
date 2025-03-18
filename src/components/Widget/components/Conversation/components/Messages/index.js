@@ -18,7 +18,7 @@ const sendFeedback = async ({message, feedbackStatus, question,customData,toggle
     answer: message.get('text'),
     question,
     feedbackStatus,
-    senderId: message.get('sender'),
+    senderId: customData?.user_id,
     homeAirport:customData?.airport_id,
     client:customData?.client_id,
     feedback:formDataObj.get("feedback")
