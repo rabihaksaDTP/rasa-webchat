@@ -198,7 +198,7 @@ class Messages extends Component {
             {this.getComponentToRender(message, index)}
             {sender === 'response' && 
             this.props.withFeedback && lastResponseIndex.some((e)=>(e?.text===message.toJS()?.text && e?.timestamp===message.toJS()?.timestamp) ) 
-            && !isReported && !isStateReported && (
+            && !isReported && !isStateReported && message.get('text') &&  (
               <div className="feedback-buttons" style={{position:"relative",zIndex:"9999"}}>
                 {!textBoxOpen[index] &&
                   <div>
@@ -217,7 +217,7 @@ class Messages extends Component {
                       sendFeedback(
                         {
                           setfeedbackbtns: this.setfeedbackbtns, toggleTextBox: this.toggleTextBox, message: message,
-                          feedbackStatus: textBoxOpen, question: messagePairs.get(index),
+                          feedbackStatus: textBoxOpen[index] , question: messagePairs.get(index),
                           customData: customData,
                           formData: e, textBoxValue: textBoxOpen,
                           feedbackUrl: this.props.feedbackUrl,
