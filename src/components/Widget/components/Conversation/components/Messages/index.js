@@ -83,7 +83,6 @@ class Messages extends Component {
     this.formRef = createRef();
     this.state = {
       textBoxOpen: {},
-      textBoxVal:"",
       reportedMessages: new Set(),
       feedbackLoader:{},
       feedbackSuccess:{}
@@ -95,9 +94,7 @@ class Messages extends Component {
   toggleFeedbackLoader = (loadingStatus,successStatus,errorMessage,index) => {
     this.setState((prev)=> { return({ feedbackLoader:{...prev?.feedbackLoader, [index]: {loading:loadingStatus,successStatus:successStatus,errorMessage:errorMessage} } } ) });
   };
-  setTextBoxVal = (textBoxVal) => {
-    this.setState({ textBoxVal: textBoxVal });
-  };
+
   onEnterPress = (e) => {
     if (e.keyCode === 13 && !e.shiftKey) {
       e.preventDefault();
@@ -157,7 +154,7 @@ class Messages extends Component {
   };
   render() {
     const { displayTypingIndication, profileAvatar,customData} = this.props;
-    const { textBoxOpen,feedbackLoader } = this.state;     
+    const { textBoxOpen,feedbackLoader } = this.state;  
     const renderMessages = () => {
       const {
         messages,
@@ -254,7 +251,6 @@ class Messages extends Component {
                             name="feedback"
                             placeholder={"Feedback"}
                             disabled={false}
-                            onChange={(e) => { this.setTextBoxVal(e.target.value); }}
                             autoFocus
                             autoComplete="off"
                           />
@@ -265,7 +261,9 @@ class Messages extends Component {
                           <button type="button" className="rw-cancel-feedback" onClick={() => this.toggleTextBox(false, index)}>✖</button>
 
                         </div>
-                        {feedbackLoader[index]?.loading && <div style={{
+                        {feedbackLoader[index]?.loading && <div 
+                        className='feed-loader-popup'
+                        style={{
                           position: "absolute",
                           background: "#4CA54C",
                           width: "100%",
@@ -278,7 +276,9 @@ class Messages extends Component {
                           color: "white",
                         }}
                         > Sending Feedback... </div>}
-                        {feedbackLoader[index]?.successStatus && <div style={{
+                        {feedbackLoader[index]?.successStatus && <div
+                        className='feed-sucess-popup'
+                        style={{
                           position: "absolute",
                           background: "#4CA54C",
                           width: "100%",
@@ -291,7 +291,9 @@ class Messages extends Component {
                           color: "white",
                         }}
                         > Feedback sent succesfully </div>}
-                        {!feedbackLoader[index]?.successStatus && feedbackLoader[index]?.errorMessage && <div style={{
+                        {!feedbackLoader[index]?.successStatus && feedbackLoader[index]?.errorMessage && <div 
+                        className='feed-error-popup'
+                        style={{
                           position: "absolute",
                           background: "#D63838",
                           width: "100%",
