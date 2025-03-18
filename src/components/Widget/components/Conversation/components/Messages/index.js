@@ -105,9 +105,9 @@ class Messages extends Component {
     scrollToBottom();
   }
 
-  componentDidUpdate() {
-    scrollToBottom();
-  }
+  // componentDidUpdate() {
+  //   scrollToBottom();
+  // }
 
   getComponentToRender = (message, index, isLast) => {
     const { params } = this.props;
