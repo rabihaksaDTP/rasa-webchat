@@ -52,12 +52,7 @@ function Feedback({ customSessionId, customData, index, markMessageAsReported, m
   const [textBoxOpen, setTextBoxOpen] = useState({});
   const [feedbackLoader, setfeedbackLoader] = useState({});
   const formRef = useRef(null);
-  const onEnterPress = (e) => {
-    if (e.keyCode === 13 && !e.shiftKey) {
-      e.preventDefault();
-      formRef?.current?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-    }
-  };
+
   const toggleTextBox = (bool, index) => {
     setTextBoxOpen((prev) => { return ({ ...prev, [index]: bool }); });
   };
@@ -99,7 +94,6 @@ function Feedback({ customSessionId, customData, index, markMessageAsReported, m
               <div style={{ display: "flex" }}>
                 <textarea
                   type="text"
-                  onKeyDown={onEnterPress}
                   className="rw-new-message rw-feedback-msg"
                   name="feedback"
                   placeholder={"Feedback"}
