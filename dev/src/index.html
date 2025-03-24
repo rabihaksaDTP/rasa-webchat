@@ -6,11 +6,20 @@
       const load = () => {
         if (!WebChat) setTimeout(load, 100);
         if (WebChat) WebChat.default({
-          customData:{language:"en"},
+          customData: {
+            "language": "en",
+            "user_id": "admin",
+            "client_id": "DXB",
+            "airport_id": "OMDB",
+            "timezone": "Asia/Dubai",
+            "authToken": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJjbGllbnQiOiJEWEIiLCJzdWIiOiJhZG1pbiIsImF1ZCI6InVua25vd24iLCJpYXQiOjE3NDI4MTIzNjEsImV4cCI6MTc2MDA5MjM2MX0.lfV-UdWTtCzsbZAs75VAXEQUc1S5p8fASv45lJxFUPN-ilEY3dIj36pm0FMmJcb2ikrGbbNJIcLUHbw7l8JZzg"
+          },
           socketUrl:"http://5.32.64.90:61924",
           withRules: true,
           withAudio:true,
           withFeedback:true,
+          customSessionId:'1',
+          session_id:"1",
           feedbackUrl:"http://5.32.64.90:61924/api/feedback"
         });
       }
