@@ -574,6 +574,9 @@ class Widget extends Component {
     event.preventDefault();
     const userUttered = object?.message ? object : event.target.message.value;
     if (userUttered) {
+      
+      this.props.dispatch(triggerMessageDelayed(true));
+
       this.props.dispatch(addUserMessage(userUttered));
       this.props.dispatch(emitUserMessage(userUttered));
     }
