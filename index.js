@@ -174,7 +174,7 @@ export const rasaWebchatProDefaultTypes = {
   inputTextFieldHint: 'Type a message...',
   connectingText: 'Waiting for server...',
   fullScreenMode: false,
-  hideWhenNotConnected: true,
+  hideWhenNotConnected: false,
   customSessionId: null,
   autoClearCache: false,
   connectOn: 'mount',

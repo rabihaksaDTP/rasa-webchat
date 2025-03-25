@@ -85,7 +85,7 @@ class Widget extends Component {
   }
 
   componentDidUpdate() {
-    const { isChatOpen, dispatch, embedded, initialized } = this.props;
+    const { isChatOpen, dispatch, embedded, initialized, connected } = this.props;
 
     if (isChatOpen) {
       if (!initialized) {
@@ -98,6 +98,11 @@ class Widget extends Component {
       dispatch(showChat());
       dispatch(openChat());
     }
+
+    if(!connected){
+      dispatch(triggerMessageDelayed(false));
+    }
+    
   }
 
   componentWillUnmount() {
@@ -574,8 +579,10 @@ class Widget extends Component {
     event.preventDefault();
     const userUttered = object?.message ? object : event.target.message.value;
     if (userUttered) {
-      
-      this.props.dispatch(triggerMessageDelayed(true));
+
+      if(this.props.connected){
+        this.props.dispatch(triggerMessageDelayed(true));
+      }
 
       this.props.dispatch(addUserMessage(userUttered));
       this.props.dispatch(emitUserMessage(userUttered));

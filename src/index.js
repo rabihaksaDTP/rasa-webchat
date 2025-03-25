@@ -229,7 +229,7 @@ ConnectedWidget.defaultProps = {
   inputTextFieldHint: 'Type a message...',
   connectingText: 'Waiting for server...',
   fullScreenMode: false,
-  hideWhenNotConnected: true,
+  hideWhenNotConnected: false,
   autoClearCache: false,
   connectOn: 'mount',
   sessionName: 'chat_session',
