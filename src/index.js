@@ -140,6 +140,8 @@ const ConnectedWidget = forwardRef((props, ref) => {
           hideWhenNotConnected={props.hideWhenNotConnected}
           withAudio={props.withAudio}
           withImage={props.withImage}
+          showClearChatButton={props.showClearChatButton}
+          clearChatUrl={props.clearChatUrl}
           withFeedback={props.withFeedback}
           feedbackUrl={props.feedbackUrl}
           requestHeaders={props.requestHeaders}

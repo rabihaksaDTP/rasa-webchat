@@ -621,6 +621,8 @@ class Widget extends Component {
         tooltipPayload={this.props.tooltipPayload}
         withAudio={this.props.withAudio}
         withImage={this.props.withImage}
+        showClearChatButton={this.props.showClearChatButton}
+        clearChatUrl={this.props.clearChatUrl}
         withFeedback={this.props.withFeedback}
         feedbackUrl={this.props.feedbackUrl}
         requestHeaders={this.props.requestHeaders}

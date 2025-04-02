@@ -20,6 +20,10 @@ const Conversation = props =>
       connectingText={props.connectingText}
       closeImage={props.closeImage}
       profileAvatar={props.profileAvatar}
+      showClearChatButton={props.showClearChatButton}
+      clearChatUrl={props.clearChatUrl}
+      customSessionId={props.customSessionId}
+      requestHeaders={props.requestHeaders}
     />
     <Messages
       profileAvatar={props.profileAvatar}

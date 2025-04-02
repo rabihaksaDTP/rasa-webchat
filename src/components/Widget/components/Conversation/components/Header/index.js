@@ -6,8 +6,12 @@ import fullscreen from 'assets/fullscreen_button.svg';
 import fullscreenExit from 'assets/fullscreen_exit_button.svg';
 import './style.scss';
 import ThemeContext from '../../../../ThemeContext';
+import { store } from '../../../../../../../index';
+import * as actions from '../../../../../../store/actions/index';
+import { dropMessages } from '../../../../../../store/actions/dispatcher';
+import { useDispatch } from 'react-redux';
 
-const Header = ({
+const  Header = ({
   title,
   subtitle,
   fullScreenMode,
@@ -18,9 +22,46 @@ const Header = ({
   connected,
   connectingText,
   closeImage,
-  profileAvatar
+  profileAvatar,
+  showClearChatButton,
+  clearChatUrl,
+  customSessionId,
+  requestHeaders
 }) => {
   const { mainColor } = useContext(ThemeContext);
+  const dispatch = useDispatch()
+  const clearData ={
+    "sessionId": customSessionId
+  }
+  const ClearChat = async () => {
+    dispatch(actions.dropMessages())
+    try {
+      const response = await fetch(clearChatUrl, {
+        method: 'POST',
+        headers: requestHeaders,
+        body: JSON.stringify(clearData)
+      });
+      if (response.ok) {
+
+      }
+      if (!response.ok) {
+
+      }
+    } catch (error) {
+
+    }
+  }
+  const deleteIconFun = (width, height, color) => {
+    return (
+      <svg className='deleteIcon' width={`${width}px`} height={`${height}px`} viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" fill={`#${color}`} stroke={`#${color}`}>
+        <g id="SVGRepo_bgCarrier" strokeWidth="0" />
+        <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" />
+        <g id="SVGRepo_iconCarrier">
+          <path className='deleteIconPath' fill={`#${color}`} d="M160 256H96a32 32 0 0 1 0-64h256V95.936a32 32 0 0 1 32-32h256a32 32 0 0 1 32 32V192h256a32 32 0 1 1 0 64h-64v672a32 32 0 0 1-32 32H192a32 32 0 0 1-32-32V256zm448-64v-64H416v64h192zM224 896h576V256H224v640zm192-128a32 32 0 0 1-32-32V416a32 32 0 0 1 64 0v320a32 32 0 0 1-32 32zm192 0a32 32 0 0 1-32-32V416a32 32 0 0 1 64 0v320a32 32 0 0 1-32 32z" />
+        </g>
+      </svg>
+    );
+  };
   return (
     <div className="rw-header-and-loading">
       <div style={{ backgroundColor: mainColor }}className={`rw-header ${subtitle ? 'rw-with-subtitle' : ''}`}>
@@ -30,6 +71,12 @@ const Header = ({
           )
         }
         <div className="rw-header-buttons">
+        {
+            showClearChatButton &&
+            <button className="rw-clearChat" onClick={ClearChat}>
+             {deleteIconFun(20, 20, 'fff')}
+            </button>
+          }
           {
             showFullScreenButton &&
             <button className="rw-toggle-fullscreen-button" onClick={toggleFullScreen}>
