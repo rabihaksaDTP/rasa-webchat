@@ -5,24 +5,41 @@ import TextareaAutosize from 'react-textarea-autosize';
 import Send from 'assets/send_button';
 import './style.scss';
 
-const Sender = ({ sendMessage, inputTextFieldHint, disabledInput, userInput, withAudio }) => {
+const Sender = ({ sendMessage, inputTextFieldHint, disabledInput, userInput, withAudio, withImage }) => {
   const [inputValue, setInputValue] = useState('');
   const [recordingStatus, setRecordingStatus] = useState('inactive');
   const [audioChunks, setAudioChunks] = useState([]);
   const [audioArrBuffer, setAudioArrBuffer] = useState([]);
   const [audio, setAudio] = useState(null);
   const mediaRecorder = useRef(null);
+  const [image, setImage] = useState(null);
+  const fileInputRef = useRef(null);
 
   const formRef = useRef(null);
 
   const microphoneSvg = <svg xmlns="http://www.w3.org/2000/svg" width="20%" height="40%" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2c-1.7 0-3 1.2-3 2.6v6.8c0 1.4 1.3 2.6 3 2.6s3-1.2 3-2.6V4.6C15 3.2 13.7 2 12 2z" /><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18.4v3.3M8 22h8" /></svg>;
   const stopSvg = <svg xmlns="http://www.w3.org/2000/svg" width="40%" height="40%" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><rect x="9" y="9" width="6" height="6" /></svg>;
 
-
   const handleChange = (e) => {
     setInputValue(e.target.value);
   };
 
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setImage(null);
+  };
 
   const startRecording = () => {
     if ('MediaRecorder' in window && recordingStatus === 'inactive') {
@@ -78,7 +95,7 @@ const Sender = ({ sendMessage, inputTextFieldHint, disabledInput, userInput, wit
   };
 
   const discardVoice = (e) => {
-    e.preventDefault(); // Prevent form submission
+    e.preventDefault();
     setAudio(null);
     setInputValue('');
   };
@@ -90,6 +107,12 @@ const Sender = ({ sendMessage, inputTextFieldHint, disabledInput, userInput, wit
       sendMessage(e, { message: base64Audio, audio_message: true });
       setInputValue('');
       setAudio(null);
+    }
+    else if (image) {
+      const base64Image = image.split(',')[1];
+      sendMessage(e, { message: e.target.message.value, data_image: base64Image, has_image: true });
+      setInputValue('');
+      setImage(null);
     } else {
       sendMessage(e);
       setInputValue('');
@@ -140,24 +163,53 @@ const Sender = ({ sendMessage, inputTextFieldHint, disabledInput, userInput, wit
         </div></>
       )}
 
-      <button type="submit" className="rw-send" disabled={!inputValue && !audio}>
-        <Send className="rw-send-icon" ready={!!(inputValue || audio)} alt="send" />
-      </button>
+      <div className="rw-sender-buttons">
+        {image && (
+          <div className="image-preview-container">
+            <div className="image-preview">
+              <img src={image} alt="Preview" className="preview-image" />
+              <button type="button" className="remove-image" onClick={removeImage}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+        )}
 
-      {!inputValue && !audio && withAudio && (
-        <button
-          type="button" // Add type="button" to prevent form submission
-          onClick={recordingStatus === 'inactive' ? startRecording : stopRecording}
-          className="recording-button"
-          disabled={disabledInput || userInput === 'disable'}
-        >
-          {recordingStatus === 'inactive' ? (
-            microphoneSvg
-          ) : (
-            stopSvg
-          )}
+        {!image && withImage && (
+          <button type="button" className="upload-image-button" onClick={() => fileInputRef.current.click()}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              ref={fileInputRef}
+              style={{ display: 'none' }}
+            />
+          </button>
+        )}
+
+        {!inputValue && !audio && withAudio && (
+          <button
+            type="button"
+            onClick={recordingStatus === 'inactive' ? startRecording : stopRecording}
+            className="recording-button"
+            disabled={disabledInput || userInput === 'disable'}
+          >
+            {recordingStatus === 'inactive' ? microphoneSvg : stopSvg}
+          </button>
+        )}
+
+        <button type="submit" className="rw-send" disabled={!inputValue && !audio && !image}>
+          <Send className="rw-send-icon" ready={!!(inputValue || audio || image)} alt="send" />
         </button>
-      )}
+      </div>
     </form>
   );
 };

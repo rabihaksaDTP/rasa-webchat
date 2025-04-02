@@ -43,6 +43,7 @@ const WidgetLayout = (props) => {
           showMessageDate={props.showMessageDate}
           inputTextFieldHint={props.inputTextFieldHint}
           withAudio={props.withAudio}
+          withImage={props.withImage}
           withFeedback={props.withFeedback}
           feedbackUrl={props.feedbackUrl}
           requestHeaders={props.requestHeaders}

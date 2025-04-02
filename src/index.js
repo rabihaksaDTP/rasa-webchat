@@ -139,6 +139,7 @@ const ConnectedWidget = forwardRef((props, ref) => {
           showFullScreenButton={props.showFullScreenButton}
           hideWhenNotConnected={props.hideWhenNotConnected}
           withAudio={props.withAudio}
+          withImage={props.withImage}
           withFeedback={props.withFeedback}
           feedbackUrl={props.feedbackUrl}
           requestHeaders={props.requestHeaders}

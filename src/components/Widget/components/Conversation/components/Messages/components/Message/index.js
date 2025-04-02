@@ -35,7 +35,7 @@ class Message extends PureComponent {
 
     // Determine if the text is a string or an object
     const isTextString = typeof text === 'string';
-    const isAudioObject = !isTextString && text && text.message;
+    const isAudioObject = !isTextString && text && text.message && text.audio_message;
 
     return (
       <div
@@ -49,7 +49,7 @@ class Message extends PureComponent {
             isTextString ? (
               <ReactMarkdown
                 className={'rw-markdown'}
-                source={text}
+                source={text.message || text}
                 linkTarget={(url) => {
                   if (!url.startsWith('mailto') && !url.startsWith('javascript')) return '_blank';
                   return undefined;
@@ -72,15 +72,14 @@ class Message extends PureComponent {
               />
             ) : null
           ) : (
-            isTextString ? (
-              <div>{text}</div>
-            ) : isAudioObject ? (
+            isAudioObject ?
               <audio
                 style={{ width: '250px', height: '50px' }}
                 src={`data:audio/mp3;base64,${text.message}`}
                 controls
-              />
-            ) : null
+              /> : (
+                <div>{text.message || text}</div>
+              )
           )}
         </div>
       </div>

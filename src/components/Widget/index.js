@@ -620,6 +620,7 @@ class Widget extends Component {
         showMessageDate={this.props.showMessageDate}
         tooltipPayload={this.props.tooltipPayload}
         withAudio={this.props.withAudio}
+        withImage={this.props.withImage}
         withFeedback={this.props.withFeedback}
         feedbackUrl={this.props.feedbackUrl}
         requestHeaders={this.props.requestHeaders}

@@ -34,6 +34,7 @@ const Conversation = props =>
     />
     <Sender
       withAudio={props.withAudio}
+      withImage={props.withImage}
       sendMessage={props.sendMessage}
       disabledInput={props.disabledInput}
       inputTextFieldHint={props.inputTextFieldHint}

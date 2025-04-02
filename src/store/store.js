@@ -41,7 +41,8 @@ function initStore(
           message: isPayloadObject ? payload.message : payload,
           customData: {
             ...socket.customData,
-            audio_message: payload.audio_message
+            audio_message: payload.audio_message,
+            data_image: payload.data_image
           },
           session_id: sessionId
         };
