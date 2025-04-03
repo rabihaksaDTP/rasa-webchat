@@ -146,7 +146,7 @@ class Messages extends Component {
           messagePairs.set(index, lastClientMessage);
         }    
         return (
-          <div className={'rw-message'} key={index} style={{flexDirection:this.props.withFeedback? "column":""}}>
+          <div className={'rw-message'} key={index} >
           {this.getComponentToRender(message, index, index === messages.size - 1)}
           {sender === 'response' &&
               message.get('type') !== MESSAGES_TYPES.BUTTONS && 

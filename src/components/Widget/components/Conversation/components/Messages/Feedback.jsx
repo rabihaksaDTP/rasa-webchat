@@ -61,7 +61,7 @@ function Feedback({ customSessionId, customData, index, markMessageAsReported, m
   };
   return (
     <>
-      <div className="feedback-buttons" style={{ position: "relative", zIndex: "9999" }}>
+      <div className="feedback-buttons" style={{ position: "relative", zIndex: "9999",width:"100%" }}>
         {!textBoxOpen[index] &&
           <div>
             <button onClick={() => { toggleTextBox("GoodResponse", index); }} className="good-feedback">
