@@ -149,6 +149,7 @@ class Messages extends Component {
           <div className={'rw-message'} key={index} style={{flexDirection:this.props.withFeedback? "column":""}}>
           {this.getComponentToRender(message, index, index === messages.size - 1)}
           {sender === 'response' &&
+              message.get('type') !== MESSAGES_TYPES.BUTTONS && 
               this.props.withFeedback && lastResponseIndex.some((e) => (e?.text === message.toJS()?.text && e?.timestamp === message.toJS()?.timestamp))
               && !isReported && !isStateReported && message.get('text') && messagePairs.get(index) &&
               <Feedback customSessionId={this.props.customSessionId} index={index} requestHeaders={this.props.requestHeaders} feedbackUrl={this.props.feedbackUrl} customData={customData} messagePairs={messagePairs} markMessageAsReported={this.markMessageAsReported}  message={message} />}
