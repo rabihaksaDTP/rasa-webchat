@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import close from 'assets/clear-button.svg';
@@ -34,22 +34,30 @@ const  Header = ({
   const clearData ={
     "sessionId": customSessionId
   }
+  const [error, setError] = useState(false)
   const ClearChat = async () => {
-    dispatch(actions.dropMessages())
     try {
-      trySendInitPayload({forced:true})
       const response = await fetch(clearChatUrl, {
         method: 'POST',
         headers: requestHeaders,
         body: JSON.stringify(clearData)
       });
       if (response.ok) {
+        dispatch(actions.dropMessages())
+        trySendInitPayload({forced:true})
+        setError(false)
       }
       if (!response.ok) {
-
+        setError(true)
+        setTimeout(() => {
+          setError(false)
+        }, 1500);
       }
     } catch (error) {
-
+      setError(true)
+      setTimeout(() => {
+        setError(false)
+      }, 1500);
     }
   }
   const deleteIconFun = (width, height, color) => {
@@ -64,7 +72,7 @@ const  Header = ({
     );
   };
   return (
-    <div className="rw-header-and-loading">
+    <div className="rw-header-and-loading" style={{position:"relative"}}>
       <div style={{ backgroundColor: mainColor }}className={`rw-header ${subtitle ? 'rw-with-subtitle' : ''}`}>
         {
           profileAvatar && (
@@ -102,6 +110,25 @@ const  Header = ({
         <h4 className={`rw-title ${profileAvatar && 'rw-with-avatar'}`}>{title}</h4>
         {subtitle && <span className={profileAvatar && 'rw-with-avatar'}>{subtitle}</span>}
       </div>
+      {error && <div
+        className='feed-error-popup'
+        style={{
+          position: "absolute",
+          background: "#D63838",
+          right: "0px",
+          top: "0px",
+          width: "150px",
+          height: "55px",
+          borderRadius: "7px",
+          textAlign: "center",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "white",
+        }}
+      > {`Error Clearing Chat`} </div>
+
+      }
       {
         !connected &&
         <span className="rw-loading">
