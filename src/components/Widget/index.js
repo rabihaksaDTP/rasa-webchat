@@ -449,7 +449,7 @@ class Widget extends Component {
   // is erased. Then behavior on reload can be consistent with
   // behavior on first load
 
-  trySendInitPayload() {
+  trySendInitPayload(forced) {
     const {
       initPayload,
       customData,
@@ -463,7 +463,12 @@ class Widget extends Component {
     } = this.props;
 
     // Send initial payload when chat is opened or widget is shown
-    if (!initialized && connected && ((isChatOpen && isChatVisible) || embedded)) {
+      if(forced){
+        const sessionId = this.getSessionId();
+        socket.emit('user_uttered', { message: "/intent_get_started", customData, session_id: sessionId });
+        dispatch(initialize());
+      }
+    if (  (!initialized && connected && ((isChatOpen && isChatVisible) || embedded)) ) {
       // Only send initial payload if the widget is connected to the server but not yet initialized
 
       const sessionId = this.getSessionId();
@@ -600,7 +605,7 @@ class Widget extends Component {
         subtitle={this.props.subtitle}
         customData={this.props.customData}
         customSessionId={this.props.customSessionId}
-
+        trySendInitPayload={(forced) => this.trySendInitPayload(forced)}
         profileAvatar={this.props.profileAvatar}
         showCloseButton={this.props.showCloseButton}
         showFullScreenButton={this.props.showFullScreenButton}

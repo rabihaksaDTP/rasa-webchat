@@ -26,7 +26,8 @@ const  Header = ({
   showClearChatButton,
   clearChatUrl,
   customSessionId,
-  requestHeaders
+  requestHeaders,
+  trySendInitPayload
 }) => {
   const { mainColor } = useContext(ThemeContext);
   const dispatch = useDispatch()
@@ -36,13 +37,13 @@ const  Header = ({
   const ClearChat = async () => {
     dispatch(actions.dropMessages())
     try {
+      trySendInitPayload({forced:true})
       const response = await fetch(clearChatUrl, {
         method: 'POST',
         headers: requestHeaders,
         body: JSON.stringify(clearData)
       });
       if (response.ok) {
-
       }
       if (!response.ok) {
 

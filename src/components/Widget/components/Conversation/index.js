@@ -24,6 +24,7 @@ const Conversation = props =>
       clearChatUrl={props.clearChatUrl}
       customSessionId={props.customSessionId}
       requestHeaders={props.requestHeaders}
+      trySendInitPayload={props.trySendInitPayload}
     />
     <Messages
       profileAvatar={props.profileAvatar}

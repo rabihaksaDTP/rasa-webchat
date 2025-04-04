@@ -51,6 +51,7 @@ const WidgetLayout = (props) => {
           requestHeaders={props.requestHeaders}
           customData={props.customData}
           customSessionId={props.customSessionId}
+          trySendInitPayload={props.trySendInitPayload}
         />
       )}
       {!props.embedded && (
