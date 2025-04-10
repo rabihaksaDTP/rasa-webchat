@@ -6,9 +6,7 @@ import fullscreen from 'assets/fullscreen_button.svg';
 import fullscreenExit from 'assets/fullscreen_exit_button.svg';
 import './style.scss';
 import ThemeContext from '../../../../ThemeContext';
-import { store } from '../../../../../../../index';
 import * as actions from '../../../../../../store/actions/index';
-import { dropMessages } from '../../../../../../store/actions/dispatcher';
 import { useDispatch } from 'react-redux';
 
 const  Header = ({
@@ -27,7 +25,8 @@ const  Header = ({
   clearChatUrl,
   customSessionId,
   requestHeaders,
-  trySendInitPayload
+  trySendInitPayload,
+  clearChatCommand,
 }) => {
   const { mainColor } = useContext(ThemeContext);
   const dispatch = useDispatch()
@@ -82,7 +81,7 @@ const  Header = ({
         <div className="rw-header-buttons">
         {
             showClearChatButton &&
-            <button className="rw-clearChat" onClick={ClearChat}>
+            <button className="rw-clearChat" onClick={clearChatCommand}>
              {deleteIconFun(20, 20, 'fff')}
             </button>
           }

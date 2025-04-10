@@ -52,6 +52,8 @@ const WidgetLayout = (props) => {
           customData={props.customData}
           customSessionId={props.customSessionId}
           trySendInitPayload={props.trySendInitPayload}
+          clearChatCommand={props.clearChatCommand}
+
         />
       )}
       {!props.embedded && (

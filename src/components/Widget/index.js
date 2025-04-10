@@ -2,6 +2,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import * as actions from '../../store/actions/index';
 import {
   toggleFullScreen,
   toggleChat,
@@ -368,10 +369,17 @@ class Widget extends Component {
     if (!socket.isInitialized()) {
       socket.createSocket();
 
+      const sessionId = this.getSessionId();
+
       socket.on('bot_uttered', (botUttered) => {
-        // botUttered.attachment.payload.elements = [botUttered.attachment.payload.elements];
-        // console.log(botUttered);
-        this.handleBotUtterance(botUttered);
+
+        if(botUttered.message === `deleted chat with sessionId ${sessionId}`){
+          dispatch(actions.dropMessages());
+          this.trySendInitPayload({ forced: true });
+        }
+        else{
+          this.handleBotUtterance(botUttered);
+        }
       });
 
       this.checkVersionBeforePull();
@@ -481,6 +489,16 @@ class Widget extends Component {
       socket.emit('user_uttered', { message: initPayload, customData, session_id: sessionId });
       dispatch(initialize());
     }
+  }
+
+  clearHistory() {
+    const {customData, socket} = this.props;
+
+    const sessionId = this.getSessionId();
+
+    customData.command = "CLEAR_HISTORY"
+    socket.emit('user_uttered', { message: "CLEAR_HISTORY", customData, session_id: sessionId });
+
   }
 
   trySendTooltipPayload() {
@@ -631,6 +649,7 @@ class Widget extends Component {
         withFeedback={this.props.withFeedback}
         feedbackUrl={this.props.feedbackUrl}
         requestHeaders={this.props.requestHeaders}
+        clearChatCommand={() => this.clearHistory()}
       />
     );
   }
