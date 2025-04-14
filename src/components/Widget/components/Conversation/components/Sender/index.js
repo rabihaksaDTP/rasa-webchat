@@ -102,20 +102,35 @@ const Sender = ({ sendMessage, inputTextFieldHint, disabledInput, userInput, wit
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (audio) {
-      const base64Audio = arrayBufferToBase64(audioArrBuffer);
-      sendMessage(e, { message: base64Audio, audio_message: true });
+    
+    try {
+      const messageData = {
+        message: e.target.message?.value || '',
+      };
+  
+      if (audio && audioArrBuffer) {
+        messageData.audio_message = true;
+        messageData.message = arrayBufferToBase64(audioArrBuffer);
+      }
+  
+      if (image) {
+        messageData.has_image = true;
+        messageData.data_image = image.includes(',') ? image.split(',')[1] : image;
+      }
+  
+      await sendMessage(e, messageData);
+  
       setInputValue('');
-      setAudio(null);
-    }
-    else if (image) {
-      const base64Image = image.split(',')[1];
-      sendMessage(e, { message: e.target.message.value, data_image: base64Image, has_image: true });
-      setInputValue('');
-      setImage(null);
-    } else {
-      sendMessage(e);
-      setInputValue('');
+      if (audio) {
+        setAudio(null);
+        setAudioArrBuffer(null);
+      }
+      if (image) {
+        setImage(null);
+      }
+  
+    } catch (error) {
+      console.error('Error submitting message:', error);
     }
   };
 
