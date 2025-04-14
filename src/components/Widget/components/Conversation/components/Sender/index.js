@@ -221,8 +221,8 @@ const Sender = ({ sendMessage, inputTextFieldHint, disabledInput, userInput, wit
           </button>
         )}
 
-        <button type="submit" className="rw-send" disabled={!inputValue && !audio && !image}>
-          <Send className="rw-send-icon" ready={!!(inputValue || audio || image)} alt="send" />
+        <button type="submit" className="rw-send" disabled={!inputValue && !audio}>
+          <Send className="rw-send-icon" ready={!!(inputValue || audio)} alt="send" />
         </button>
       </div>
     </form>
