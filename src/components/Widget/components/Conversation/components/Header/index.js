@@ -34,6 +34,8 @@ const  Header = ({
     "sessionId": customSessionId
   }
   const [error, setError] = useState(false)
+  const [showDialog, setShowDialog] = useState(false)
+
   const ClearChat = async () => {
     try {
       const response = await fetch(clearChatUrl, {
@@ -70,6 +72,9 @@ const  Header = ({
       </svg>
     );
   };
+  const clearChatConfirmation =()=>{
+    setShowDialog(true)
+  }
   return (
     <div className="rw-header-and-loading" style={{position:"relative"}}>
       <div style={{ backgroundColor: mainColor }}className={`rw-header ${subtitle ? 'rw-with-subtitle' : ''}`}>
@@ -81,9 +86,17 @@ const  Header = ({
         <div className="rw-header-buttons">
         {
             showClearChatButton &&
-            <button className="rw-clearChat" onClick={clearChatCommand}>
+            <button className="rw-clearChat" onClick={clearChatConfirmation}>
              {deleteIconFun(20, 20, 'fff')}
             </button>
+          }
+          {
+            showDialog? <div className='delete-chat-conf-btn' style={{position:"absolute",top:"0px",width:"230px",right:"0px",height:"100px",background:"white",color:"red",zIndex:"99",borderRadius:"5px",padding:"5px"}}>
+               <div className='delete-chat-conf-title' >Are you sure you want to Clear the chat?</div>  
+               <div  className='delete-chat-btns-container' style={{marginTop:"5px",display:"flex",height:"40px",justifyContent:"center",alignItems:"center"}}>
+               <div className='delete-chatbot-chat-btns' style={{width:"50%"}}> <button style={{border:"none",outline:"none",cursor:"pointer",padding:"10px"}} onClick={(e)=>{clearChatCommand(e); setShowDialog(false)}}> <i className='sapUiIcon si-sys-enter'></i> YES </button> </div> <div  className='delete-chatbot-chat-btns' style={{width:"50%"}}> <button  style={{border:"none",outline:"none",cursor:"pointer",padding:"10px"}} onClick={()=>{setShowDialog(false)}}>  <i className='sapUiIcon si-cancel'></i> NO </button> </div>
+               </div>
+               </div> :<></>
           }
           {
             showFullScreenButton &&
