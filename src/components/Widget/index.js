@@ -303,10 +303,10 @@ class Widget extends Component {
 
   applyCustomStyle() {
     const { domHighlight, defaultHighlightCss, defaultHighlightClassname } = this.props;
-    const domHighlightJS = domHighlight?.toJS() || {};
-    if (domHighlightJS?.selector) {
-      const elements = safeQuerySelectorAll(domHighlightJS?.selector);
-      elements.length && elements.forEach((element) => {
+    const domHighlightJS = domHighlight.toJS() || {};
+    if (domHighlightJS.selector) {
+      const elements = safeQuerySelectorAll(domHighlightJS.selector);
+      elements.forEach((element) => {
         switch (domHighlightJS.style) {
           case 'custom':
             element.setAttribute('style', domHighlightJS.css);
@@ -531,6 +531,7 @@ class Widget extends Component {
       disableTooltips
     } = this.props;
     if (isChatOpen && this.delayedMessage) {
+      if (!disableTooltips) dispatch(showTooltip(true));
       clearTimeout(this.messageDelayTimeout);
       this.dispatchMessage(this.delayedMessage);
       dispatch(newUnreadMessage());
@@ -540,9 +541,12 @@ class Widget extends Component {
         this.dispatchMessage(message);
         dispatch(newUnreadMessage());
       });
+      this.applyCustomStyle();
 
       this.messages = [];
       this.delayedMessage = null;
+    } else {
+      this.props.dispatch(showTooltip(false));
     }
     clearTimeout(this.tooltipTimeout);
     dispatch(toggleChat());

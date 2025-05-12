@@ -51,16 +51,8 @@
     border-spacing: 0;
   }
 }
-.rw-close-button{
-  width:30px;
-  height: 30px;
-  display: flex !important;
-}
-.simple-css-tooltip>div>div{
-  width: 100px !important;
-  padding: 10px !important;
-  white-space: inherit;
-}
+
+
 .#{$namespace}widget-container {
   bottom: 0;
   display: flex;
