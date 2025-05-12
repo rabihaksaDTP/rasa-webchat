@@ -8,6 +8,7 @@ import './style.scss';
 import ThemeContext from '../../../../ThemeContext';
 import * as actions from '../../../../../../store/actions/index';
 import { useDispatch } from 'react-redux';
+import { Tooltip } from './Tooltip';
 
 const  Header = ({
   title,
@@ -86,9 +87,11 @@ const  Header = ({
         <div className="rw-header-buttons">
         {
             showClearChatButton &&
-            <button className="rw-clearChat" onClick={clearChatConfirmation}>
+            <Tooltip content="Clear Chat" >
+            <button className="rw-clearChat" onClick={clearChatConfirmation} style={{cursor:"pointer"}}>
              {deleteIconFun(20, 20, 'fff')}
             </button>
+            </Tooltip>
           }
           {
             showDialog? <div className='delete-chat-conf-btn' style={{position:"absolute",top:"0px",width:"230px",right:"0px",height:"100px",background:"white",color:"red",zIndex:"99",borderRadius:"5px",padding:"5px"}}>
@@ -100,7 +103,7 @@ const  Header = ({
           }
           {
             showFullScreenButton &&
-            <button className="rw-toggle-fullscreen-button" onClick={toggleFullScreen}>
+            <button className="rw-toggle-fullscreen-button" onClick={toggleFullScreen} style={{cursor:"pointer"}}>
               <img
                 className={`rw-toggle-fullscreen ${fullScreenMode ? 'rw-fullScreenExitImage' : 'rw-fullScreenImage'}`}
                 src={fullScreenMode ? fullscreenExit : fullscreen}
@@ -110,6 +113,7 @@ const  Header = ({
           }
           {
             showCloseButton &&
+            <Tooltip content="Minimize" >
             <button className="rw-close-button" onClick={toggleChat}>
               <img
                 className={`rw-close ${closeImage ? '' : 'rw-default'}`}
@@ -117,6 +121,7 @@ const  Header = ({
                 alt="close"
               />
             </button>
+            </Tooltip>
           }
         </div>
         <h4 className={`rw-title ${profileAvatar && 'rw-with-avatar'}`}>{title}</h4>
