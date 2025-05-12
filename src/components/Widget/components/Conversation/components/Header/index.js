@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
-
+import Tooltip from "react-simple-tooltip"
 import close from 'assets/clear-button.svg';
 import fullscreen from 'assets/fullscreen_button.svg';
 import fullscreenExit from 'assets/fullscreen_exit_button.svg';
@@ -83,12 +83,14 @@ const  Header = ({
             <img src={profileAvatar} className="rw-avatar" alt="chat avatar" />
           )
         }
-        <div className="rw-header-buttons">
-        {
+        <div className="rw-header-buttons" >
+          {
             showClearChatButton &&
-            <button className="rw-clearChat" onClick={clearChatConfirmation}>
-             {deleteIconFun(20, 20, 'fff')}
-            </button>
+            <Tooltip content="Clear Chat" placement="bottom" background="white" color='rgb(36, 69, 97)' border="none" radius={5} className="simple-css-tooltip">
+                <button className="rw-clearChat" onClick={clearChatConfirmation}>
+                  {deleteIconFun(20, 20, 'fff')}
+                </button>
+            </Tooltip>
           }
           {
             showDialog? <div className='delete-chat-conf-btn' style={{position:"absolute",top:"0px",width:"230px",right:"0px",height:"100px",background:"white",color:"red",zIndex:"99",borderRadius:"5px",padding:"5px"}}>
@@ -110,6 +112,7 @@ const  Header = ({
           }
           {
             showCloseButton &&
+            <Tooltip content="Minimize" placement="bottom" background="white" color='rgb(36, 69, 97)' border="none" radius={5} className="simple-css-tooltip">
             <button className="rw-close-button" onClick={toggleChat}>
               <img
                 className={`rw-close ${closeImage ? '' : 'rw-default'}`}
@@ -117,6 +120,7 @@ const  Header = ({
                 alt="close"
               />
             </button>
+            </Tooltip>
           }
         </div>
         <h4 className={`rw-title ${profileAvatar && 'rw-with-avatar'}`}>{title}</h4>
