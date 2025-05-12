@@ -20,6 +20,7 @@ import Badge from './components/Badge';
 import { safeQuerySelectorAll } from 'utils/dom';
 import './style.scss';
 import ThemeContext from '../../ThemeContext';
+import { Tooltip } from '../Conversation/components/Header/Tooltip';
 
 const Launcher = ({
   toggle,
@@ -206,6 +207,7 @@ const Launcher = ({
   );
 
   return (
+    <Tooltip content="Minimize" >
     <button type="button" style={{ backgroundColor: mainColor }} className={className.join(' ')} onClick={toggle}>
       <Badge badge={badge} />
       {isChatOpen ? (
@@ -218,6 +220,7 @@ const Launcher = ({
         renderOpenLauncherImage()
       )}
     </button>
+    </Tooltip>
   );
 };
 
