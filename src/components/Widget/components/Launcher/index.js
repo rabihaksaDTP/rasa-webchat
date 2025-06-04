@@ -205,9 +205,8 @@ const Launcher = ({
       {showTooltip && lastMessage && lastMessage.get('sender') === 'response' && (referenceElement ? renderPlacedTooltip() : renderToolTip())}
     </div>
   );
-
   return (
-    <Tooltip content="Minimize" >
+    <Tooltip content={`${isChatOpen ? "Minimize" :""}`} >
     <button type="button" style={{ backgroundColor: mainColor }} className={className.join(' ')} onClick={toggle}>
       <Badge badge={badge} />
       {isChatOpen ? (
