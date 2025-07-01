@@ -79,7 +79,7 @@ function Feedback({ customSessionId, customData, index, markMessageAsReported, m
               sendFeedback(
                 {
                   toggleTextBox: toggleTextBox, message: message,
-                  feedbackStatus: textBoxOpen[index], question: messagePairs.get(index),
+                  feedbackStatus: textBoxOpen[index], question: typeof messagePairs.get(index) ==="object"? messagePairs.get(index)?.message : messagePairs.get(index),
                   customData: customData,
                   formData: e, textBoxValue: textBoxOpen,
                   feedbackUrl: feedbackUrl,
