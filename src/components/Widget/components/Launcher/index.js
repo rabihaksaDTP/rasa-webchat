@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { usePopper } from 'react-popper';
-import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
@@ -118,7 +117,7 @@ const Launcher = ({
 
   const renderSequenceTooltip = lastMessagesSeq => (
     <div className="rw-slider-safe-zone" onClick={e => e.stopPropagation()}>
-      <Slider {...sliderSettings}>
+      {/* <Slider {...sliderSettings}> */}
         {lastMessagesSeq.map(message => (
           // eslint-disable-next-line jsx-a11y/no-static-element-interactions
           <div
@@ -140,7 +139,7 @@ const Launcher = ({
             {getComponentToRender(message)}
           </div>
         ))}
-      </Slider>
+      {/* </Slider> */}
     </div>
   )
     ;
