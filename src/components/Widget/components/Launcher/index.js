@@ -163,11 +163,22 @@ const Launcher = ({
           <img src={closeIcon} alt="close" />
         </button>
       </div>
-      { lastMessages.length === 1 ? (<div
+      <div
+              onClick={(e) => {
+            /* stop the propagation because the popup is also a button
+            otherwise it would open the webchat when closing the tooltip */
+            e.stopPropagation();
+            
+            const payload = domHighlight.get('tooltipClose')
+              if(domHighlight && payload){
+                sendPayload(`/${payload}`)
+              }
+            closeTooltip();
+          }}
         onMouseUp={() => toggle()}
       >
         {getComponentToRender(lastMessages[0], true)}
-      </div>) : renderSequenceTooltip(lastMessages) }
+      </div>
     </React.Fragment>
   );
 
@@ -201,7 +212,7 @@ const Launcher = ({
         <div className="rw-unread-count-pastille">{unreadCount}</div>
       )}
       <img src={openLauncherImage || openLauncher} className="rw-open-launcher" alt="" />
-      {showTooltip && lastMessage && lastMessage.get('sender') === 'response' && (referenceElement ? renderPlacedTooltip() : renderToolTip())}
+      {unreadCount > 0 && showTooltip && lastMessage && lastMessage.get('sender') === 'response' && (referenceElement ? renderPlacedTooltip() : renderToolTip())}
     </div>
   );
   return (
