@@ -164,6 +164,7 @@ class Widget extends Component {
     if (!isChatOpen) {
       this.dispatchMessage(message);
       dispatch(newUnreadMessage());
+      dispatch(triggerMessageDelayed(false));
       if (!disableTooltips) {
         dispatch(showTooltip(true));
         this.applyCustomStyle();
