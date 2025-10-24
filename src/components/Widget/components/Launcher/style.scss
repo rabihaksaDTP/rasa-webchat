@@ -1,15 +1,13 @@
-@import "variables.scss";
-@import "common.scss";
-@import "animation.scss";
-.#{$namespace}markdown {
+
+.rw-markdown {
     p {
         margin: 10px;
     }
 }
 
-.#{$namespace}widget-container {
+.rw-widget-container {
   
-  .#{$namespace}conversation-container{
+  .rw-conversation-container{
       @media screen and (min-width: 800px){
           margin-bottom: 10px;
       }
@@ -22,21 +20,21 @@
 
 }
 
-.#{$namespace}widget-embedded .#{$namespace}conversation-container ul {
+.rw-widget-embedded .rw-conversation-container ul {
   padding-left: 10px;
   list-style: disc;
 }
 
 
-.#{$namespace}launcher {
+.rw-launcher {
   @include animation(0, 0.5s, slide-in);
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: $tertiary;
+  background-color: #135afe;
   border: 0;
   border-radius: 50%;
-  box-shadow: 0px 2px 10px 1px $grey-3;
+  box-shadow: 0px 2px 10px 1px #b5b5b5;
   height: 60px;
   margin: 0;
   width: 60px;
@@ -46,11 +44,11 @@
     outline: none;
   }
   
-  &.#{$namespace}hide {
+  &.rw-hide {
     display: none
   }
 
-  &.#{$namespace}full-screen {
+  &.rw-full-screen {
     @include launcher-fs;
   }
   
@@ -60,7 +58,7 @@
     object-fit: contain;
   }
 
-  .#{$namespace}unread-count-pastille {
+  .rw-unread-count-pastille {
     background-color: #e41c23;
     color: white;
     border-radius: 50%;
@@ -72,7 +70,7 @@
     font-weight: 700;
   }
 
-  .#{$namespace}tooltip-body {
+  .rw-tooltip-body {
     background-color: white;
     box-sizing: border-box;
     border-radius: 8px;
@@ -114,17 +112,17 @@
 ;
 
       cursor: pointer;
-      .#{$namespace}tooltip-decoration {
+      .rw-tooltip-decoration {
         background: rgb(250, 250, 250);
       }
-      .#{$namespace}tooltip-close button {
+      .rw-tooltip-close button {
         background-color: rgb(250, 250, 250);
       }
     }
 
     &[data-popper-placement=right] {
       margin-left: 20px;
-      .#{$namespace}tooltip-decoration {
+      .rw-tooltip-decoration {
         left: -6px;
         clip-path: polygon(0% 50%, 50% 0, 50% 100%);
         -webkit-clip-path: polygon(0% 50%, 50% 0, 50% 100%);
@@ -132,7 +130,7 @@
     }
     &[data-popper-placement=left] {
       margin-right: 20px;
-      .#{$namespace}tooltip-decoration {
+      .rw-tooltip-decoration {
         right: -6px;
         clip-path: polygon(100% 50%, 50% 0, 50% 100%);
         -webkit-clip-path: polygon(100% 50%, 50% 0, 50% 100%);
@@ -141,7 +139,7 @@
 
     &[data-popper-placement=bottom] {
       margin-top: 20px;
-      .#{$namespace}tooltip-decoration {
+      .rw-tooltip-decoration {
         top: -6px;
         clip-path: polygon(100% 50%, 0 50%, 50% 0);
         -webkit-clip-path: polygon(100% 50%, 0 50%, 50% 0);
@@ -150,26 +148,26 @@
 
     &[data-popper-placement=top] {
       margin-bottom: 20px;
-      .#{$namespace}tooltip-decoration {
+      .rw-tooltip-decoration {
         bottom: -6px;
         clip-path: polygon(100% 50%, 0 50%, 50% 100%);
         -webkit-clip-path: polygon(100% 50%, 0 50%, 50% 100%);
       }
     }
 
-    .#{$namespace}image-details {
+    .rw-image-details {
       object-fit: scale-down;
       max-width: 100%;
       margin-top: 8px;
       margin-bottom: 2px;
     }
-    .#{$namespace}replies {
+    .rw-replies {
       @include replies;
       justify-content: flex-end;
       margin-left: 4px;
     }
 
-    .#{$namespace}separator {
+    .rw-separator {
      width:calc(100% + 16px);
      position:relative;
      left:-8px;
@@ -177,11 +175,11 @@
      background-color: #e0e0e0
     }
     
-    .#{$namespace}reply {
+    .rw-reply {
       @include reply;
     }
 
-    .#{$namespace}response {
+    .rw-response {
       text-align: left;
       margin-left: 10px;
       margin-right: 10px;
@@ -191,7 +189,7 @@
         padding-left: 40px;
       }
     }
-    .#{$namespace}image-frame {
+    .rw-image-frame {
       object-position: 0 0;
       object-fit: cover;
       width: 100%;
@@ -199,7 +197,7 @@
       border-radius: 9px;
     }
   }
-  .#{$namespace}tooltip-decoration {
+  .rw-tooltip-decoration {
     position: absolute;
     bottom: 12px;
     right: -6px;
@@ -236,25 +234,25 @@
     }
   }
 
-  .#{$namespace}slider-safe-zone {
+  .rw-slider-safe-zone {
     width: 87%;
     position: relative;
     margin-bottom: 32px;
     left: 18px;
     .slick-list {
-      .#{$namespace}tooltip-response {
-        max-height: unquote("min(60vh, 350px)");
+      .rw-tooltip-response {
+        max-height: min(60vh, 350px);
         overflow-y: auto;
       }
     }
   }
 
-  .#{$namespace}tooltip-response {
+  .rw-tooltip-response {
     margin-top:1.5rem;
     outline: none;
   }
 
-  .#{$namespace}tooltip-close {
+  .rw-tooltip-close {
     position: absolute;
     right: 7px;
     top: 3px;
@@ -278,12 +276,12 @@
   to {opacity: 1; transform: translateY(0);}
 }
 
-.#{$namespace}open-launcher {
+.rw-open-launcher {
   @include animation(0, 0.5s, rotation-rl);
 }
 
-.#{$namespace}close-launcher {
-  &.#{$namespace}default {
+.rw-close-launcher {
+  &.rw-default {
     width: 20px !important;
   }
   @include animation(0, 0.5s, rotation-lr);
@@ -291,7 +289,7 @@
 
 
 @media screen and (max-width: 800px) {
-  .#{$namespace}hide-sm {
+  .rw-hide-sm {
     display: none;
   }
 }

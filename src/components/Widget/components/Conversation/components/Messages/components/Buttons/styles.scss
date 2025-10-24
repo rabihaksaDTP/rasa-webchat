@@ -1,23 +1,21 @@
-@import "variables.scss";
 
-@import "common.scss";
 
-.#{$namespace}conversation-container {
+.rw-conversation-container {
 
-  .#{$namespace}replies {
+  .rw-replies {
     @include replies;
   }
   
-  .#{$namespace}reply {
+  .rw-reply {
     @include reply;
   }
   
-  .#{$namespace}response {
-    @include message-bubble($grey-2, #000, 0 15px 15px 15px);
+  .rw-response {
+    @include message-bubble(#f4f7f9, #000, 0 15px 15px 15px);
     max-width: 85%;
   }
   
-  .#{$namespace}avatar {
+  .rw-avatar {
     width: 17px;
     height: 17px;
     border-radius: 100%;
