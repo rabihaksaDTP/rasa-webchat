@@ -3,13 +3,13 @@
 .rw-conversation-container {
   .rw-header {
     background-color: #135afe;
-    color: $white;
+    color: #fff;
     display: flex;
     flex-direction: column;
     justify-content: center;
     text-align: center;
     height: 55px;
-    font-family: $fontfamily;
+    font-family: 'Inter', sans-serif;
     position: relative;
     .rw-avatar {
       all: initial;
@@ -42,7 +42,7 @@
   .rw-title {
     font-size: 20px;
     margin: 0;
-    font-family: $fontfamily;
+    font-family: 'Inter', sans-serif;
     position: absolute;
     left: 20px;
     font-weight: 700;
@@ -69,12 +69,12 @@
 
   .rw-loading {
     background-color: $grey-3;
-    color: $white;
+    color: #fff;
     display: flex;
     flex-direction: column;
     text-align: center;
     padding: 5px 0 5px;
-    font-family: $fontfamily;
+    font-family: 'Inter', sans-serif;
     font-size: 14px;
   }
 }

@@ -7,7 +7,7 @@
     font-size: 16px;
     line-height: 20px;
     display: flex;
-    font-family: $fontfamily;
+    font-family: 'Inter', sans-serif;
     flex-wrap: wrap;
     position: relative;
   
@@ -22,7 +22,7 @@
   }
   
   .rw-client {
-    @include message-bubble($blue-1, $white);
+    @include message-bubble($blue-1, #fff);
     background-color: #135afe ;
     max-width: 85%;
     margin-left: auto;

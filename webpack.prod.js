@@ -1,41 +1,13 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const { version } = require('./package.json');
 
-module.exports = {
-  entry: './umd.js',
-
-  output: {
-    path: path.resolve(__dirname, 'lib'),
-    filename: 'index.js',
-    library: {
-      name: 'WebChat',
-      type: 'umd',
-    },
-    clean: true, // replaces clean-webpack-plugin
-  },
-
+// --- Common Configuration ---
+// All rules and settings shared by both builds
+const commonConfig = {
   mode: 'production',
-  devtool: 'eval-source-map',
-
-  // ✅ Webpack 5 no longer supports `contentBase` or `stats`
-  devServer: {
-    static: {
-      directory: path.resolve(__dirname, 'lib'),
-    },
-    host: process.env.HOST || 'localhost',
-    port: process.env.PORT || 8080,
-    open: true,
-    client: {
-      overlay: true,
-    },
-    hot: true,
-  },
-
   resolve: {
     extensions: ['.js', '.jsx'],
-    // Add polyfills for Node built-ins (Webpack 5 removed them)
     fallback: {
       crypto: require.resolve('crypto-browserify'),
       stream: require.resolve('stream-browserify'),
@@ -43,9 +15,12 @@ module.exports = {
       path: require.resolve('path-browserify'),
       process: require.resolve('process/browser'),
     },
+    // ⛔️ We DO NOT include 'fallback' or 'ProvidePlugin' here.
+    // Those are for the demo app, not the library build.
+    // The consumer of your library must provide their own polyfills.
   },
-
   module: {
+    // All the rules from your webpack.dev.js
     rules: [
       {
         test: /\.(js|jsx)$/,
@@ -61,33 +36,22 @@ module.exports = {
           'babel-loader',
         ],
       },
-      // 1. RULE FOR YOUR SASS (.scss) FILES
       {
         test: /\.scss$/,
         use: [
           'style-loader',
-          {
-            loader: 'css-loader',
-            options: {
-              sourceMap: true,
-            },
-          },
-          {
-            loader: 'resolve-url-loader',
-            options: {
-              sourceMap: true,
-            },
-          },
+          'css-loader',
+          'resolve-url-loader',
           {
             loader: 'sass-loader',
             options: {
               implementation: require('sass'),
-              sourceMap: true,
+              // We remove sourceMaps for production
               additionalData: `
                 @use "variables" as *;
                 @use "animation" as *;
                 @use "common" as *;
-              `,   
+              `,
               sassOptions: {
                 loadPaths: [
                   path.resolve(__dirname, 'src/scss'),
@@ -97,32 +61,64 @@ module.exports = {
           },
         ],
       },
-
-      // 2. RULE FOR PLAIN .css FILES
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
       },
       {
         test: /\.(jpg|png|gif|svg|woff|ttf|eot)$/,
-        type: 'asset/resource', // replaces url-loader/file-loader
+        type: 'asset/resource', // Use asset/resource for prod
       },
     ],
   },
-
   plugins: [
-    new HtmlWebpackPlugin({
-      title: 'Web Chat Widget Test',
-      filename: 'index.html',
-      inject: false,
-      template: 'dev/src/index.html',
+    // ⛔️ We DO NOT include HtmlWebpackPlugin.
+    new webpack.DefinePlugin({
+      // Webpack sets NODE_ENV automatically in 'production' mode
+      'process.env.PACKAGE_VERSION': JSON.stringify(version),
     }),
-
-    // Provide Node globals for browser builds
-    new webpack.ProvidePlugin({
-      Buffer: ['buffer', 'Buffer'],
-      process: 'process/browser',
-    }),
-
   ],
 };
+
+// --- Build 1: CommonJS (CJS) for "main" field ---
+const cjsConfig = {
+  ...commonConfig,
+  entry: './index.js', // Your library's main entry
+  output: {
+    path: path.join(__dirname, 'lib'),
+    filename: 'index.js',
+    library: {
+      type: 'commonjs2',
+    },
+    clean: true,
+  },
+  // ✅ This is CRITICAL for a library
+  externals: {
+    react: 'react',
+    'react-dom': 'react-dom',
+  },
+};
+
+// --- Build 2: ES Module (ESM) for "module" field ---
+const esmConfig = {
+  ...commonConfig,
+  entry: './index.js', // Your library's main entry
+  experiments: {
+    outputModule: true,
+  },
+  output: {
+    path: path.join(__dirname, 'module'),
+    filename: 'index.js',
+    library: {
+      type: 'module',
+    },
+    clean: true,
+  },
+  // ✅ This is CRITICAL for a library
+  externals: {
+    react: 'react',
+    'react-dom': 'react-dom',
+  },
+};
+
+module.exports = [cjsConfig, esmConfig];

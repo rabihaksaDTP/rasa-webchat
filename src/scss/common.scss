@@ -9,7 +9,7 @@ $fontfamily: 'Inter', sans-serif;
   padding: 11px 15px;
   max-width: 215px;
   text-align: left;
-  font-family: $fontfamily;
+  font-family: 'Inter', sans-serif;
 }
 
 @mixin borderless-message-bubble($color, $textColor) {
@@ -21,7 +21,7 @@ $fontfamily: 'Inter', sans-serif;
     max-width: 215px;
     max-height: 1em;
     text-align: center;
-    font-family: $fontfamily;
+    font-family: 'Inter', sans-serif;
   }
 
 @mixin widget-container-fs {
@@ -145,7 +145,7 @@ $fontfamily: 'Inter', sans-serif;
   min-height: 1.7em;
   font-weight: 500;
   text-align: center;
-  font-family: $fontfamily;
+  font-family: 'Inter', sans-serif;
   cursor: pointer;
   margin: 0.25em;
   text-decoration: unset;
@@ -170,5 +170,5 @@ $fontfamily: 'Inter', sans-serif;
   line-height: 20px;
   flex-wrap: wrap;
   font-size: 16px;
-  font-family: $fontfamily;
+  font-family: 'Inter', sans-serif;
 }
